@@ -127,7 +127,7 @@ namespace T_Shirts_API.Controllers
             return NoContent();
         }
 
-
+        [HttpDelete]
         public async Task<IActionResult> ClearAsync()
         {
             var items = await _dbcontext.CartItems
