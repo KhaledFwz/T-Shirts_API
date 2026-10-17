@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -11,6 +12,7 @@ namespace T_Shirts_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class ProductController : ControllerBase
     {
         private readonly TShirtAppDBContext _dbContext;
@@ -36,6 +38,7 @@ namespace T_Shirts_API.Controllers
         
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<ProductReadDto>>> GetAllAsync([FromQuery] int? categoryId)
         {
             var query =  _dbContext.Products.Where(p => p.IsActive);
@@ -49,6 +52,7 @@ namespace T_Shirts_API.Controllers
 
 
         [HttpGet("{id}", Name = "GetProductById")]
+        [AllowAnonymous]
         public async Task<ActionResult<ProductReadDto>> GetByIdAsync(int id)
         {
             var product = await _dbContext.Products

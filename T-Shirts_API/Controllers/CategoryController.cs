@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using T_Shirts_API.Context;
@@ -9,6 +10,7 @@ namespace T_Shirts_API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin")]
     public class CategoryController : ControllerBase
     {
         private readonly TShirtAppDBContext _dbContext;
@@ -20,6 +22,7 @@ namespace T_Shirts_API.Controllers
 
         // Get All
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<CategoryReadDto>>> GetAllAsync()
         {
             var categories = await _dbContext.Categories
@@ -30,6 +33,7 @@ namespace T_Shirts_API.Controllers
 
         // Get By Id
         [HttpGet("id", Name = "GetCategoryById")]
+        [AllowAnonymous]
         public async Task<ActionResult<CategoryReadDto>> GetByIdAsync(int id)
         {
             var category = await _dbContext.Categories

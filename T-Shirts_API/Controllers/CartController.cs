@@ -35,7 +35,8 @@ namespace T_Shirts_API.Controllers
                     ProductId = ci.ProductId,
                     ProductName = ci.Product.Name,
                     ImageUrl = ci.Product.ImageUrl,
-                    UnitPrice = ci.Quantity,
+                    UnitPrice = ci.Product.Price,
+                    Quantity = ci.Quantity,
                     LineTotal = ci.Product.Price * ci.Quantity
                 }).ToListAsync();
 
@@ -92,19 +93,19 @@ namespace T_Shirts_API.Controllers
 
         }
 
-        [HttpPut("items/{items:int}")]
+        [HttpPut("items/{itemId:int}")]
         public async Task<ActionResult<CartReadDto>> UpdateItemAsync(int itemId,UpdateCartItemDto dto)
         {
             var userId = CurrentUserId;
 
             var item = await _dbcontext.CartItems
                 .Include(ci => ci.Product)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(ci => ci.Id == itemId && ci.Cart.UserId == userId);
             if (item == null)
                 return NotFound(new { message = "العنصر ده مش في عربيتك" });
 
             if (dto.Quantity > item.Product.StockQuantity)
-                return BadRequest(new { message = $"المتاح من المنتج ده{item.Product.StockQuantity}بس" });
+                return BadRequest(new { message = $" المتاح من المنتج ده{item.Product.StockQuantity}بس" });
 
             item.Quantity = dto.Quantity;
             await _dbcontext.SaveChangesAsync();
